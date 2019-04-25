@@ -152,8 +152,13 @@ define windows_firewall::exception(
 
     # Use unless for exec if we want the rule to exist, include a description
     if $ensure == 'present' {
-      $fw_action = 'add'
-      $unless = $check_rule_existance
+      if $check_rule_existance {
+        $fw_action = 'set'
+        $unless = undef
+      } else {
+        $fw_action = 'add'
+        $unless = $check_rule_existance
+      }
       $onlyif = undef
       $fw_description = "description=\"${description}\""
     } else {
